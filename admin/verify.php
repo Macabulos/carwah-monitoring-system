@@ -3,23 +3,7 @@ include 'includes/conn.php';
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
-
-
-
-
     // under construction please be aware okay !!!!!!!!!!!!
-
-
-
-
-
-
-
-
-
-
-
-
     // Verify the token and set the user as verified
     $stmt = $conn->prepare("UPDATE admin SET is_verified = 1, verification_token = NULL WHERE verification_token = ?");
     $stmt->bind_param("s", $token);

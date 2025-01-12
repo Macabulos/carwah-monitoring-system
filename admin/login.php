@@ -39,7 +39,7 @@
                   <h3 class="popup__content__title">Success</h3>
                   <p>Login Successfully</p>
                   <p>
-                     <?php echo "<script>setTimeout(\"location.href = 'index.php';\",1500);</script>"; ?>
+                     <?php echo "<script>setTimeout(\"location.href = 'dashboard.php';\",1500);</script>"; ?>
                   </p>
                </div>
             </div>

@@ -27,14 +27,14 @@
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="vehicleForm.php">
-              <i class="align-middle fa fa-plus" ></i> <span class="align-middle">Add Vehicle</span>
+              <i class="align-middle fa fa-plus" ></i> <span class="align-middle">Add Customer Vehicle</span>
             </a>
 					</li>
 
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="view.php">
-              <i class="align-middle fa fa-eye"></i> <span class="align-middle">View All Vehicles</span>
+              <i class="align-middle fa fa-eye"></i> <span class="align-middle">Update Customers</span>
             </a>
 					</li>
 					

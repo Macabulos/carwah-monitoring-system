@@ -24,53 +24,79 @@ if (isset($_POST['submit'])) {
     $owner_email = !empty($_POST['owner_email']) ? mysqli_real_escape_string($conn, $_POST['owner_email']) : null;
     $owner_phone = !empty($_POST['owner_phone']) ? mysqli_real_escape_string($conn, $_POST['owner_phone']) : null;
 
-    // Validate the customer name (no numbers allowed)
+    // Validation
     if (!preg_match("/^[a-zA-Z\s]+$/", $owner_name)) {
         $message = "Customer name should only contain letters and spaces.";
-    }
-    // Validate the vehicle number (only alphanumeric characters)
-    elseif (!preg_match("/^[a-zA-Z0-9]+$/", $vehicle_number)) {
+    } elseif (!preg_match("/^[a-zA-Z0-9]+$/", $vehicle_number)) {
         $message = "Vehicle number should only contain alphanumeric characters.";
-    }
-    // Validate the phone number (if provided, maximum length of 15 characters)
-    elseif ($owner_phone && strlen($owner_phone) > 15) {
+    } elseif ($owner_phone && strlen($owner_phone) > 15) {
         $message = "Phone number cannot be more than 15 characters.";
-    }
-    // Check if 'Choose...' was selected for vehicle_type or service_type
-    elseif ($vehicle_type2 == 'Choose...' || $service_type2 == 'Choose...') {
+    } elseif ($vehicle_type2 == 'Choose...' || $service_type2 == 'Choose...') {
         $message = "Please select a valid vehicle type and service type.";
     } else {
-        // Insert data into the database
-        $insert = "INSERT INTO queue (owner_email, owner_name, owner_phone, owner_address, vehicle_type, vehicle_number, service_type, in_time) 
-                   VALUES ('$owner_email', '$owner_name', '$owner_phone', '$owner_address', '$vehicle_type2', '$vehicle_number', '$service_type2', '$in_time')
-                   ON DUPLICATE KEY UPDATE owner_email=IFNULL('$owner_email', owner_email), owner_name='$owner_name', owner_phone=IFNULL('$owner_phone', owner_phone), owner_address='$owner_address', service_type='$service_type2'";
+        // Check for existing record (vehicle number)
+        $vehicle_check_query = "SELECT * FROM queue WHERE vehicle_number = '$vehicle_number'";
+        $vehicle_check_result = mysqli_query($conn, $vehicle_check_query);
 
-        if (mysqli_query($conn, $insert)) {
-            $message = "Vehicle Information Added.";
+        // Check for existing record (owner name)
+        $name_check_query = "SELECT * FROM queue WHERE owner_name = '$owner_name'";
+        $name_check_result = mysqli_query($conn, $name_check_query);
 
-            // Send email if provided
-            if (!empty($owner_email)) {
-                try {
-                    $subject = "Duck'z Detailing & Car Wash | Your Carwash Initialized!";
-                    $id_get = mysqli_query($conn, "SELECT * FROM status_type WHERE id='1' LIMIT 1");
-                    $id = mysqli_fetch_array($id_get);
-                    $description = "The status of your carwash is " . $id['name'];
-
-                    if (sendMail($owner_email, $subject, $owner_name, $description, $vehicle_number)) {
-                        $message .= " Tracking information sent to the customer's email.";
-                    } else {
-                        $message .= " Failed to send tracking information to the customer.";
-                    }
-                } catch (Exception $e) {
-                    $message .= " Email sending failed.";
-                }
-            }
+        if (mysqli_num_rows($vehicle_check_result) > 0) {
+            $message = "This vehicle number is already in the system.";
+        } elseif (mysqli_num_rows($name_check_result) > 0) {
+            $message = "This customer name is already in the system. Please wait for another Session.";
         } else {
-            $message = "Error: " . $insert . "<br>" . mysqli_error($conn);
+            // Insert new data
+            $insert = "
+                INSERT INTO queue (
+                    owner_email, 
+                    owner_name, 
+                    owner_phone, 
+                    owner_address, 
+                    vehicle_type, 
+                    vehicle_number, 
+                    service_type, 
+                    in_time
+                ) 
+                VALUES (
+                    '$owner_email', 
+                    '$owner_name', 
+                    '$owner_phone', 
+                    '$owner_address', 
+                    '$vehicle_type2', 
+                    '$vehicle_number', 
+                    '$service_type2', 
+                    '$in_time'
+                )
+            ";
+
+            if (mysqli_query($conn, $insert)) {
+                $message = "Vehicle information added successfully.";
+
+                // Send email if provided
+                if (!empty($owner_email)) {
+                    try {
+                        $subject = "Duck'z Detailing & Car Wash | Your Carwash Initialized!";
+                        $id_get = mysqli_query($conn, "SELECT * FROM status_type WHERE id='1' LIMIT 1");
+                        $id = mysqli_fetch_array($id_get);
+                        $description = "The status of your carwash is " . $id['name'];
+
+                        if (sendMail($owner_email, $subject, $owner_name, $description, $vehicle_number)) {
+                            $message .= " Tracking information sent to the customer's email.";
+                        } else {
+                            $message .= " Failed to send tracking information to the customer.";
+                        }
+                    } catch (Exception $e) {
+                        $message .= " Email sending failed.";
+                    }
+                }
+            } else {
+                $message = "Error: " . mysqli_error($conn);
+            }
         }
     }
 }
-
 
 ?>
 
@@ -83,7 +109,7 @@ if (isset($_POST['submit'])) {
             <?php include 'includes/navtop.php'; ?>
             <main class="content">
                <div class="container-fluid p-0">
-                  <h1 class="h3 mb-3">Add New Vehicle</h1>
+                  <h1 class="h3 mb-3">Add New Customer Vehicle</h1>
                   <div class="row">
                      <div class="col-12">
                         <div class="card">
