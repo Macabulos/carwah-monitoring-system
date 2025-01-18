@@ -1,7 +1,7 @@
 		<nav id="sidebar" class="sidebar">
 			<div class="sidebar-content js-simplebar">
 				<a class="sidebar-brand" href="index.php">
-          <span class="align-middle">Duck'z Detailing & Car Wash</span>
+          <span class="align-middle">Duck'z Auto Detailing & Car Wash</span>
         </a>
 
 				<ul class="sidebar-nav">

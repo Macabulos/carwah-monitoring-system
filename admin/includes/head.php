@@ -23,7 +23,7 @@ if(!isset($_SESSION["id"])) {
 	<link rel="shortcut icon" href="../../admin/img/ico.png" />
     
 
-	<title>Duck'z Detailing & Car Wash</title>
+	<title>Duck'z Auto Detailing & Car Wash</title>
 
 	<link href="css/app.css" rel="stylesheet">
 	

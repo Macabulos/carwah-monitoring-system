@@ -105,7 +105,8 @@
                                     <td>'.$row['service_type'].'</td>
                                     <td><span class="'.$status.'">'.$row['status'].'</span></td>
                                     <td>'.date('l jS \of F Y h:i:s A', strtotime($row['in_time'])).'</td>
-                                    <td>'.($row['last_update'] != '' ? date('l jS \of F Y h:i:s A', strtotime($row['out_time'])) : null).'</td>
+                                    <td>'.($row['last_update'] && strtotime($row['out_time']) ? date('l jS \of F Y h:i:s A', strtotime($row['out_time'])) : date('l jS \of F Y h:i:s A', strtotime($row['in_time']))).'</td>
+
                                     <td class="table-action">
 												<a onclick="loadData('.$row['id'].')" data-id="'.$row['id'].'" type="button" class="btn" data-toggle="modal" data-target="#deleteModal"><i class="align-middle" data-feather="edit"></i> UPDATE</a>
 											</td>
@@ -133,8 +134,6 @@
             <?php include 'includes/footer.php';?>
          </div>
       </div>
-      
-      
       									<!-- BEGIN delete modal -->
 									<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
 										<div class="modal-dialog modal-lg" role="document">

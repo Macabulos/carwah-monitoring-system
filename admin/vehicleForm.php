@@ -77,7 +77,7 @@ if (isset($_POST['submit'])) {
                 // Send email if provided
                 if (!empty($owner_email)) {
                     try {
-                        $subject = "Duck'z Detailing & Car Wash | Your Carwash Initialized!";
+                        $subject = "Duck'z Auto Detailing & Car Wash | Your Carwash Initialized!";
                         $id_get = mysqli_query($conn, "SELECT * FROM status_type WHERE id='1' LIMIT 1");
                         $id = mysqli_fetch_array($id_get);
                         $description = "The status of your carwash is " . $id['name'];
